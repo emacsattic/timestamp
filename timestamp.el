@@ -7,7 +7,7 @@
 ;; Maintainer: Noah Friedman <friedman@splode.com>
 ;; Created: 1990-01-08
 
-;; $Id: timestamp.el,v 1.2 2000/08/08 09:51:38 friedman Exp $
+;; $Id: timestamp.el,v 1.3 2010/04/18 01:44:29 friedman Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,9 +20,7 @@
 ;; GNU General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to the
-;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -116,15 +114,15 @@ the starting location and the type of the time stamp. (local) timestamp.el")
 
 (defun time-stamp-date-string (&optional type)
   "Return today's date in the format specified in TYPE."
-  (mapconcat #'(lambda (x)
-                 (cond ((stringp x) x)
-                       ((symbolp x)
-                        (let* ((elt (assq x time-stamp-date-string-elts))
-                               (tm (format-time-string (nth 1 elt)))
-                               (cvt (nth 2 elt)))
-                          (if cvt
-                              (funcall cvt tm)
-                            tm)))))
+  (mapconcat (lambda (x)
+               (cond ((stringp x) x)
+                     ((symbolp x)
+                      (let* ((elt (assq x time-stamp-date-string-elts))
+                             (tm (format-time-string (nth 1 elt)))
+                             (cvt (nth 2 elt)))
+                        (if cvt
+                            (funcall cvt tm)
+                          tm)))))
              (nth (or type 0) time-stamp-string-forms)
              ""))
 
@@ -144,10 +142,10 @@ the starting location and the type of the time stamp. (local) timestamp.el")
   "Return the string that is to be used to match the time stamp in a buffer.
 The format of the string is determined from the first argument FORM, which
 must be an element of time-stamp-string-forms."
-  (mapconcat #'(lambda (x)
-                 (cond ((stringp x) x)
-                       ((symbolp x)
-                        (nth 1 (assq x time-stamp-concat-form-elts)))))
+  (mapconcat (lambda (x)
+               (cond ((stringp x) x)
+                     ((symbolp x)
+                      (nth 1 (assq x time-stamp-concat-form-elts)))))
              form ""))
 
 
@@ -205,10 +203,11 @@ for more information."
             (insert (time-stamp-date-string type))
             (setq time-stamp-last-update-values (list opoint type)))
         ;; No prefix arg -> update it.
-        (let ((opoint (point))
-              (lim (save-excursion (beginning-of-line) (point)))
-              (beg nil) (end nil)
-              (type nil))
+        (let* ((inhibit-field-text-motion t)
+               (opoint (point))
+               (lim (save-excursion (beginning-of-line) (point)))
+               (beg nil) (end nil)
+               (type nil))
           (while (and (not end) (or (not type) (not (bolp))))
             (skip-chars-backward "\-/0-9A-Za-z" lim)
             (let ((forms time-stamp-string-forms))
