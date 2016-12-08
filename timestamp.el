@@ -7,7 +7,7 @@
 ;; Maintainer: Noah Friedman <friedman@splode.com>
 ;; Created: 1990-01-08
 
-;; $Id: timestamp.el,v 1.3 2010/04/18 01:44:29 friedman Exp $
+;; $Id: timestamp.el,v 1.4 2016/11/24 20:24:53 friedman Exp $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -101,12 +101,12 @@ the starting location and the type of the time stamp. (local) timestamp.el")
 (make-variable-buffer-local 'time-stamp-last-update-values)
 
 (defconst time-stamp-date-string-elts
-  '((day           "%d" 'string-to-int)
+  '((day           "%d" 'string-to-number)
     (daypad        "%e")
     (daypad0       "%d")
     (monthpad      "%_m")
     (monthpad0     "%02m")
-    (month         "%m" 'string-to-int)
+    (month         "%m" 'string-to-number)
     (monthfullname "%B")
     (monthname     "%b")
     (year          "%Y")
